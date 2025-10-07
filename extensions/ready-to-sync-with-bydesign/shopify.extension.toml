@@ -1,0 +1,13 @@
+[[extensions]]
+name = "Ready to sync with ByDesign"
+handle = "ready-to-sync-with-bydesign"
+type = "flow_trigger"
+uid = "6a9695c9-7e8e-26f3-9831-1202351a2047988a8d6d"
+description = "Trigger for ByDesign integration flows"
+
+[settings]
+ 
+  [[settings.fields]]
+  type = "order_reference"
+
+ 

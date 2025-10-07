@@ -1,0 +1,14 @@
+query CartPaymentMethodsTransformRunInput {
+  cart {
+    buyerIdentity {
+      email
+    }
+    isrep: attribute(key: "isrep") {
+      value
+    }
+  }
+  paymentMethods {
+    id
+    name
+  }
+}
