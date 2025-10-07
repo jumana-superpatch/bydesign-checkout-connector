@@ -1,64 +1,71 @@
-import { extension, AdminAction, BlockStack, Button, Text } from "@shopify/ui-extensions/admin";
+import {
+  extension,
+  AdminAction,
+  BlockStack,
+  Button,
+  Text,
+} from "@shopify/ui-extensions/admin";
 
-// The target used here must match the target used in the extension's toml file (./shopify.extension.toml)
-const TARGET = 'admin.product-details.action.render';
+const TARGET = "admin.order-details.action.render";
 
-// The second argument to the render callback provides access to several useful APIs like i18n, close, and data.
-export default extension(TARGET, (root, { i18n, close, data }) => {
-  const productTitle = root.createText('');
+export default extension(TARGET, (root, { close, data, toast }) => {
+  console.log('extension is there');
+  const orderId = data.selected?.[0]?.id; // e.g. gid://shopify/Order/6115848224921
+  console.log(orderId);
+  const sendToByDesign = async () => {
+    try {
+      const orderNumericId = Number(orderId.split("/").pop());
 
-  getProductInfo(data).then((title) => {
-    productTitle.update(title);
-  });
+      const mutation = {
+        query: `
+          mutation {
+            flowTriggerReceive(
+              handle: "ready-to-sync-with-bydesign",
+              payload: {
+                order_id: ${orderNumericId}
+              }
+            ) {
+              userErrors {
+                field
+                message
+              }
+            }
+          }
+        `,
+      };
 
-  root.append(
-    root.createComponent(
-      // The AdminAction component provides an API for setting the title and actions of the Action extension wrapper.
-      AdminAction,
-      {
-        primaryAction: root.createComponent(Button, {
-          onPress: () => {
-            console.log("saving");
-            close();
-          },
-        }, 'Done'),
-        secondaryAction: root.createComponent(Button, {
-          onPress: () => {
-            console.log("closing");
-            close();
-          },
-        }, 'Close')
-      },
-      root.createComponent(BlockStack, null,
-        // Set the translation values for each supported language in the locales directory
-        root.createComponent(Text, {fontWeight: 'bold'}, i18n.translate('welcome', {target: TARGET})),
-        root.createComponent(Text, null, 'Current product: ', productTitle)
-      )
-    )
-  );
-});
+      const res = await fetch("shopify:admin/api/graphql.json", {
+        method: "POST",
+        body: JSON.stringify(mutation),
+      });
 
-// Use direct API calls to fetch data from Shopify.
-// See https://shopify.dev/docs/api/admin-graphql for more information about Shopify's GraphQL API
-async function getProductInfo(data) {
-  const getProductQuery = {
-    query: `query Product($id: ID!) {
-      product(id: $id) {
-        title
+      const json = await res.json();
+      const errors = json?.data?.flowTriggerReceive?.userErrors;
+
+      if (errors?.length) {
+        toast.show(`Error: ${errors[0].message}`);
+      } else {
+        toast.show("Successfully sent to ByDesign!");
+        close(); // optional
       }
-    }`,
-    variables: {id: data.selected[0].id},
+    } catch (e) {
+      console.error("Mutation error:", e);
+      toast.show("Unexpected error triggering Flow");
+    }
   };
 
-  const res = await fetch("shopify:admin/api/graphql.json", {
-    method: "POST",
-    body: JSON.stringify(getProductQuery),
+  const sendButton = root.createComponent(Button, { onPress: sendToByDesign }, "Send to ByDesign");
+  const cancelButton = root.createComponent(Button, { onPress: close }, "Cancel");
+
+  const content = root.createComponent(BlockStack, null, [
+    root.createComponent(Text, { fontWeight: "bold" }, "Send this order to ByDesign"),
+  ]);
+
+  const adminAction = root.createComponent(AdminAction, {
+    primaryAction: sendButton,
+    secondaryAction: cancelButton,
+    children: [content],
   });
 
-  if (!res.ok) {
-    console.error('Network error');
-  }
-
-  const productData = await res.json();
-  return productData.data.product.title;
-};
+  root.append(adminAction);
+});
