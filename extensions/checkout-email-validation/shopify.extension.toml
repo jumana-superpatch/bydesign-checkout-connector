@@ -6,8 +6,8 @@
 api_version = "2025-07"
 
 [[extensions]]
-name = "Bydesign-checkout"
-handle = "bydesign-checkout"
+name = "Checkout - Validate Email"
+handle = "checkout-email-validation"
 type = "ui_extension"
 uid = "8e123847-a9ca-fe96-1573-e740c7c3a57d8137e1c3"
 

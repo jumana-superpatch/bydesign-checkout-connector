@@ -1,5 +1,5 @@
 {
-  "name": "by-design-check",
+  "name": "bydesign-integration-dev",
   "private": true,
   "scripts": {
     "build": "remix vite:build",

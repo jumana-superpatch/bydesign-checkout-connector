@@ -1,13 +1,14 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "f8424ee08ff32f248e9b73d1b2cbfd7b"
-name = "ByDesign Check Dev"
+name = "ByDesign Integration Dev"
 application_url = "https://stickers-growth-peer-leon.trycloudflare.com"
 embedded = true
-handle = "bydesign-check-1"
+handle = "bydesign-integration-dev"
 
 [build]
 automatically_update_urls_on_dev = true
+
 
 [webhooks]
 api_version = "2025-07"
