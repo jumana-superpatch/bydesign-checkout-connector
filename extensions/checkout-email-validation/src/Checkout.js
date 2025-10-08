@@ -63,10 +63,10 @@ export default extension('purchase.checkout.block.render', (root, api) => {
     }
 
     await updateCartAttribute(REP_ATTRIBUTE, null);
-    
-    if (!isCustomer){
+
+    if (!isCustomer) {
       let rsuValue = attributes.current?.find(attr => attr.key === '__rsu')?.value;
-      
+
       // RSU fallback
       if (rsuValue) {
         await updateCartMetafield({ namespace: 'bdt', key: 'rsu', value: rsuValue });
@@ -79,12 +79,15 @@ export default extension('purchase.checkout.block.render', (root, api) => {
   const runByDesignValidation = async (email) => {
     showBanner('Validating email...', 'info');
 
+    const shopDomain = api.shop.myshopifyDomain;
+    console.log(shopDomain);
+
     try {
       const response = await fetch(
         'https://shopify-bydesign-integrator.cloudflare-superpatch.workers.dev/',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'x-shop-domain': shopDomain, 'Content-Type': 'application/json' },
           body: JSON.stringify({
             operation: 'validate-customer',
             data: { email: email },

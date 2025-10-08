@@ -1,5 +1,5 @@
 {
-  "name": "Send Order to Bydesign",
+  "name": "Sync with Bydesign",
   "button_text": "Sync with Bydesign",
   "welcome": "Welcome to the {{target}} extension!"
 }
