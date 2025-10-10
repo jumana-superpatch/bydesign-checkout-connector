@@ -2,7 +2,7 @@
 
 client_id = "f8424ee08ff32f248e9b73d1b2cbfd7b"
 name = "ByDesign Integration Dev"
-application_url = "https://stickers-growth-peer-leon.trycloudflare.com"
+application_url = "https://shopify.dev/apps/default-app-home/api/auth"
 embedded = true
 handle = "bydesign-integration-dev"
 
@@ -25,7 +25,7 @@ api_version = "2025-07"
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "write_customers, read_customers, write_orders"
 [auth]
-redirect_urls = ["https://stickers-growth-peer-leon.trycloudflare.com/auth/callback", "https://stickers-growth-peer-leon.trycloudflare.com/auth/shopify/callback", "https://stickers-growth-peer-leon.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://shopify.dev/apps/default-app-home/api/auth"]
 
 [pos]
 embedded = false
